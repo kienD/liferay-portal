@@ -22,8 +22,7 @@ const onReady = (fn) => {
 		document.readyState === 'loaded'
 	) {
 		fn();
-	}
-	else {
+	} else {
 		document.addEventListener('DOMContentLoaded', fn);
 	}
 
@@ -55,8 +54,7 @@ const clickEvent = ({
 				href: target.href,
 				text: target.innerText,
 			});
-		}
-		else if (tagName === 'img') {
+		} else if (tagName === 'img') {
 			Object.assign(payload, {
 				src: target.src,
 			});
@@ -119,4 +117,21 @@ const sortByEventDate = (a, b) => {
 	return 0;
 };
 
-export {clickEvent, onReady, sortByEventDate};
+const removeDups = (results, items) => {
+	const events = results.flatMap(({value}) => value.events);
+	return items.filter(
+		({contextHash, eventId, eventDate}) =>
+			!events.some(
+				({
+					contextHash: resultContextHash,
+					eventId: resultEventId,
+					eventDate: resultEventDate,
+				}) =>
+					contextHash === resultContextHash &&
+					eventId === resultEventId &&
+					eventDate === resultEventDate
+			)
+	);
+};
+
+export {clickEvent, onReady, removeDups, sortByEventDate};
