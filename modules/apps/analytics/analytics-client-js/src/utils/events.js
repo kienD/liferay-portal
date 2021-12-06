@@ -22,7 +22,8 @@ const onReady = (fn) => {
 		document.readyState === 'loaded'
 	) {
 		fn();
-	} else {
+	}
+	else {
 		document.addEventListener('DOMContentLoaded', fn);
 	}
 
@@ -54,7 +55,8 @@ const clickEvent = ({
 				href: target.href,
 				text: target.innerText,
 			});
-		} else if (tagName === 'img') {
+		}
+		else if (tagName === 'img') {
 			Object.assign(payload, {
 				src: target.src,
 			});
@@ -119,13 +121,14 @@ const sortByEventDate = (a, b) => {
 
 const removeDups = (results, items) => {
 	const events = results.flatMap(({value}) => value.events);
+
 	return items.filter(
-		({contextHash, eventId, eventDate}) =>
+		({contextHash, eventDate, eventId}) =>
 			!events.some(
 				({
 					contextHash: resultContextHash,
-					eventId: resultEventId,
 					eventDate: resultEventDate,
+					eventId: resultEventId,
 				}) =>
 					contextHash === resultContextHash &&
 					eventId === resultEventId &&

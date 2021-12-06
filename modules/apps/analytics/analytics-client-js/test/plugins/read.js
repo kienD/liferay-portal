@@ -55,6 +55,7 @@ describe('Read Plugin', () => {
 	beforeAll(createMetaTag);
 
 	beforeEach(() => {
+
 		// Force attaching DOM Content Loaded event
 
 		Object.defineProperty(document, 'readyState', {
@@ -159,6 +160,7 @@ describe('Read Plugin', () => {
 		});
 
 		it('is fired when there is not scroll on the page and reaches time', async () => {
+
 			// Redefining scrollHeight
 
 			Object.defineProperty(document.documentElement, 'scrollHeight', {

@@ -103,7 +103,8 @@ class BaseCreateMessageQueue extends BaseQueue {
 		return events.reduce((contextEventMap, event) => {
 			if (contextEventMap[event.contextHash]) {
 				contextEventMap[event.contextHash].push(event);
-			} else {
+			}
+			else {
 				contextEventMap[event.contextHash] = [event];
 			}
 
