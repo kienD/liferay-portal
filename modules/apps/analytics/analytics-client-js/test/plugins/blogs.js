@@ -39,7 +39,6 @@ describe('Blogs Plugin', () => {
 	let Analytics;
 
 	beforeEach(() => {
-
 		// Force attaching DOM Content Loaded event
 
 		Object.defineProperty(document, 'readyState', {
@@ -60,12 +59,12 @@ describe('Blogs Plugin', () => {
 	});
 
 	describe('blogViewed event', () => {
-		it('is fired for every blog on the page', () => {
+		it('is fired for every blog on the page', async () => {
 			const blogElement = createBlogElement();
 
 			const domContentLoaded = new Event('DOMContentLoaded');
 
-			document.dispatchEvent(domContentLoaded);
+			await document.dispatchEvent(domContentLoaded);
 
 			const events = Analytics.getEvents().filter(
 				({eventId}) => eventId === 'blogViewed'
@@ -88,7 +87,7 @@ describe('Blogs Plugin', () => {
 	});
 
 	describe('blogClicked event', () => {
-		it('is fired when clicking an image inside a blog', () => {
+		it('is fired when clicking an image inside a blog', async () => {
 			const blogElement = createBlogElement();
 
 			const imageInsideBlog = document.createElement('img');
@@ -97,7 +96,7 @@ describe('Blogs Plugin', () => {
 
 			blogElement.appendChild(imageInsideBlog);
 
-			userEvent.click(imageInsideBlog);
+			await userEvent.click(imageInsideBlog);
 
 			expect(Analytics.getEvents()).toEqual([
 				expect.objectContaining({
@@ -114,7 +113,7 @@ describe('Blogs Plugin', () => {
 			document.body.removeChild(blogElement);
 		});
 
-		it('is fired when clicking a link inside a blog', () => {
+		it('is fired when clicking a link inside a blog', async () => {
 			const blogElement = createBlogElement();
 
 			const text = 'Link inside a Blog';
@@ -127,7 +126,7 @@ describe('Blogs Plugin', () => {
 
 			blogElement.appendChild(linkInsideBlog);
 
-			userEvent.click(linkInsideBlog);
+			await userEvent.click(linkInsideBlog);
 
 			expect(Analytics.getEvents()).toEqual([
 				expect.objectContaining({
@@ -145,7 +144,7 @@ describe('Blogs Plugin', () => {
 			document.body.removeChild(blogElement);
 		});
 
-		it('is fired when clicking any other element inside a blog', () => {
+		it('is fired when clicking any other element inside a blog', async () => {
 			const blogElement = createBlogElement();
 
 			const paragraphInsideBlog = document.createElement('p');
@@ -156,7 +155,7 @@ describe('Blogs Plugin', () => {
 
 			blogElement.appendChild(paragraphInsideBlog);
 
-			userEvent.click(paragraphInsideBlog);
+			await userEvent.click(paragraphInsideBlog);
 
 			expect(Analytics.getEvents()).toEqual([
 				expect.objectContaining({

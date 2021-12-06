@@ -170,7 +170,6 @@ describe('Analytics', () => {
 		sendDummyEvents(Analytics, 1);
 
 		setTimeout(async () => {
-
 			// Flush should have happened at least once
 
 			const userId = getItem(STORAGE_KEY_USER_ID);
@@ -239,12 +238,14 @@ describe('Analytics', () => {
 			expect(typeof Analytics.send).toBe('function');
 		});
 
-		it('adds the given event to the event queue', () => {
+		it('adds the given event to the event queue', async () => {
+			Analytics = AnalyticsClient.create(INITIAL_CONFIG);
+
 			const eventId = 'eventId';
 			const applicationId = 'applicationId';
 			const properties = {a: 1, b: 2, c: 3};
 
-			Analytics.send(eventId, applicationId, properties);
+			await Analytics.send(eventId, applicationId, properties);
 
 			const events = Analytics.getEvents();
 
@@ -257,10 +258,11 @@ describe('Analytics', () => {
 			]);
 		});
 
-		it('persists the given events to the LocalStorage', () => {
+		it('persists the given events to the LocalStorage', async () => {
+			Analytics = AnalyticsClient.create(INITIAL_CONFIG);
 			const eventsNumber = 5;
 
-			sendDummyEvents(Analytics, eventsNumber);
+			await sendDummyEvents(Analytics, eventsNumber);
 
 			const events = Analytics.getEvents();
 
@@ -273,11 +275,13 @@ describe('Analytics', () => {
 			expect(typeof Analytics.track).toBe('function');
 		});
 
-		it('adds the given event to the event queue', () => {
+		it('adds the given event to the event queue', async () => {
+			Analytics = AnalyticsClient.create(INITIAL_CONFIG);
+
 			const eventId = 'customEventId';
 			const properties = {a: 1, b: 2, c: 3};
 
-			Analytics.track(eventId, properties);
+			await Analytics.track(eventId, properties);
 
 			const events = Analytics.getEvents();
 
@@ -290,11 +294,13 @@ describe('Analytics', () => {
 			]);
 		});
 
-		it('uses CustomEvent as default applicationId', () => {
+		it('uses CustomEvent as default applicationId', async () => {
+			Analytics = AnalyticsClient.create(INITIAL_CONFIG);
+
 			const eventId = 'customEventId';
 			const properties = {a: 1, b: 2, c: 3};
 
-			Analytics.track(eventId, properties);
+			await Analytics.track(eventId, properties);
 
 			const events = Analytics.getEvents();
 
@@ -307,12 +313,14 @@ describe('Analytics', () => {
 			]);
 		});
 
-		it('uses applicationId from options', () => {
+		it('uses applicationId from options', async () => {
+			Analytics = AnalyticsClient.create(INITIAL_CONFIG);
+
 			const eventId = 'BlogView';
 			const properties = {a: 1, b: 2, c: 3};
 			const options = {applicationId: 'Blog'};
 
-			Analytics.track(eventId, properties, options);
+			await Analytics.track(eventId, properties, options);
 
 			const events = Analytics.getEvents();
 
@@ -325,10 +333,11 @@ describe('Analytics', () => {
 			]);
 		});
 
-		it('persists the given events to the LocalStorage', () => {
+		it('persists the given events to the LocalStorage', async () => {
+			Analytics = AnalyticsClient.create(INITIAL_CONFIG);
 			const eventsNumber = 5;
 
-			trackDummyEvents(Analytics, eventsNumber);
+			await trackDummyEvents(Analytics, eventsNumber);
 
 			const events = Analytics.getEvents();
 
