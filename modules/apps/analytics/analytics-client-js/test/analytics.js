@@ -54,6 +54,20 @@ describe('Analytics', () => {
 		jest.restoreAllMocks();
 	});
 
+	it('returns channelId from config by default', () => {
+		expect(Analytics._getContext().channelId).toBe('4321');
+	});
+
+	it('returns channelId from middleware', () => {
+		Analytics.registerMiddleware((request) => {
+			request.context.channelId = '5678';
+
+			return request;
+		});
+
+		expect(Analytics._getContext().channelId).toBe('5678');
+	});
+
 	it('is exposed in the global scope', () => {
 		expect(global.Analytics).toBeInstanceOf(Object);
 	});
@@ -156,7 +170,6 @@ describe('Analytics', () => {
 		sendDummyEvents(Analytics, 1);
 
 		setTimeout(async () => {
-
 			// Flush should have happened at least once
 
 			const userId = getItem(STORAGE_KEY_USER_ID);

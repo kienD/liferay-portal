@@ -52,7 +52,6 @@ let instance;
  * and flushes it to the defined endpoint at regular intervals.
  */
 class Analytics {
-
 	/**
 	 * Returns an Analytics instance and triggers the automatic flush loop
 	 * @param {Object} config object to instantiate the Analytics tool
@@ -315,7 +314,7 @@ class Analytics {
 	_getContext() {
 		const {context} = middlewares.reduce(
 			(request, middleware) => middleware(request, this),
-			{context: {}}
+			{context: {channelId: instance.config.channelId}}
 		);
 
 		for (const key in context) {
@@ -375,8 +374,7 @@ class Analytics {
 	}
 
 	_isNewUserIdRequired() {
-		const {dataSourceId} = this.config;
-		const {identity} = this.config;
+		const {dataSourceId, identity} = this.config;
 
 		const storedIdentityHash = getItem(STORAGE_KEY_IDENTITY);
 		const storedUserId = getItem(STORAGE_KEY_USER_ID);
