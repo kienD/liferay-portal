@@ -175,7 +175,6 @@ describe('Analytics', () => {
 		sendDummyEvents(Analytics, 1);
 
 		setTimeout(async () => {
-
 			// Flush should have happened at least once
 
 			const userId = getItem(STORAGE_KEY_USER_ID);
@@ -277,6 +276,12 @@ describe('Analytics', () => {
 	});
 
 	describe('track()', () => {
+		afterEach(() => {
+			if (console.error.mockRestore) {
+				console.error.mockRestore();
+			}
+		});
+
 		it('is exposed as an Analytics method', () => {
 			expect(typeof Analytics.track).toBe('function');
 		});
@@ -298,6 +303,18 @@ describe('Analytics', () => {
 					properties,
 				}),
 			]);
+		});
+
+		it('returns a type error if the eventId is not a string', async () => {
+			Analytics = AnalyticsClient.create(INITIAL_CONFIG);
+
+			const eventId = {test: 'test'};
+
+			console.error = jest.fn((val) => val);
+
+			await Analytics.track(eventId);
+
+			expect(console.error).toHaveBeenCalledTimes(1);
 		});
 
 		it('uses CustomEvent as default applicationId', async () => {

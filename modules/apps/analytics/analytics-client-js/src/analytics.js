@@ -52,7 +52,6 @@ let instance;
  * and flushes it to the defined endpoint at regular intervals.
  */
 class Analytics {
-
 	/**
 	 * Returns an Analytics instance and triggers the automatic flush loop
 	 * @param {Object} config object to instantiate the Analytics tool
