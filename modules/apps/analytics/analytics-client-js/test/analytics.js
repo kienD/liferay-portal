@@ -175,6 +175,7 @@ describe('Analytics', () => {
 		sendDummyEvents(Analytics, 1);
 
 		setTimeout(async () => {
+
 			// Flush should have happened at least once
 
 			const userId = getItem(STORAGE_KEY_USER_ID);
@@ -315,6 +316,46 @@ describe('Analytics', () => {
 			await Analytics.track(eventId);
 
 			expect(console.error).toHaveBeenCalledTimes(1);
+		});
+
+		it('uses the applicationId from options', async () => {
+			Analytics = AnalyticsClient.create(INITIAL_CONFIG);
+
+			const eventId = 'test';
+			const applicationId = 'Page';
+			const properties = {a: 1, b: 2, c: 3};
+
+			await Analytics.track(eventId, properties, {applicationId});
+
+			const events = Analytics.getEvents();
+
+			expect(events).toEqual([
+				expect.objectContaining({
+					applicationId,
+					eventId,
+					properties,
+				}),
+			]);
+		});
+
+		it('uses the assetType from properties over the applicationId from options', async () => {
+			Analytics = AnalyticsClient.create(INITIAL_CONFIG);
+
+			const assetType = 'Blog';
+			const eventId = 'test';
+			const properties = {a: 1, assetType};
+
+			await Analytics.track(eventId, properties, {applicationId: 'Page'});
+
+			const events = Analytics.getEvents();
+
+			expect(events).toEqual([
+				expect.objectContaining({
+					applicationId: assetType,
+					eventId,
+					properties: {a: 1},
+				}),
+			]);
 		});
 
 		it('uses CustomEvent as default applicationId', async () => {

@@ -52,6 +52,7 @@ let instance;
  * and flushes it to the defined endpoint at regular intervals.
  */
 class Analytics {
+
 	/**
 	 * Returns an Analytics instance and triggers the automatic flush loop
 	 * @param {Object} config object to instantiate the Analytics tool
@@ -209,10 +210,12 @@ class Analytics {
 	 * @param {Object} options Complementary information about the request
 	 */
 	track(eventId, eventProps, options = {}) {
+		const {assetType, ...otherEventProps} = eventProps || {};
+
 		if (
 			this._isTrackingDisabled() ||
 			instance._disposed ||
-			!isValidEvent({eventId, eventProps})
+			!isValidEvent({eventId, eventProps: otherEventProps})
 		) {
 			return;
 		}
@@ -220,13 +223,15 @@ class Analytics {
 		// eslint-disable-next-line
 		const mergedOptions = Object.assign({}, TRACK_DEFAULT_OPTIONS, options);
 
+		const applicationId = assetType || mergedOptions.applicationId;
+
 		const currentContextHash = this._getCurrentContextHash();
 
 		instance[STORAGE_KEY_EVENTS].addItem(
 			normalizeEvent(
 				eventId,
-				mergedOptions.applicationId,
-				eventProps,
+				applicationId,
+				otherEventProps,
 				currentContextHash
 			)
 		);
