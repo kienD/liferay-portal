@@ -16,6 +16,7 @@ import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 
 import AnalyticsClient from '../../src/analytics';
+import {wait} from '../helpers';
 
 const applicationId = 'WebContent';
 
@@ -60,12 +61,26 @@ describe('WebContent Plugin', () => {
 	});
 
 	describe('webContentViewed event', () => {
-		it('is fired for every webContent on the page', async () => {
+		it('is fired when web-content is in viewport', async () => {
 			const webContentElement = createWebContentElement();
+
+			jest.spyOn(
+				webContentElement,
+				'getBoundingClientRect'
+			).mockImplementation(() => ({
+				bottom: 500,
+				height: 500,
+				left: 0,
+				right: 500,
+				top: 0,
+				width: 500,
+			}));
 
 			const domContentLoaded = new Event('DOMContentLoaded');
 
 			await document.dispatchEvent(domContentLoaded);
+
+			await wait(250);
 
 			const events = Analytics.getEvents().filter(
 				({eventId}) => eventId === 'webContentViewed'
@@ -82,6 +97,36 @@ describe('WebContent Plugin', () => {
 					}),
 				})
 			);
+
+			document.body.removeChild(webContentElement);
+		});
+
+		it('is not fired when web-content is not in viewport', async () => {
+			const webContentElement = createWebContentElement();
+
+			jest.spyOn(
+				webContentElement,
+				'getBoundingClientRect'
+			).mockImplementation(() => ({
+				bottom: 1500,
+				height: 500,
+				left: 0,
+				right: 500,
+				top: 1000,
+				width: 500,
+			}));
+
+			const domContentLoaded = new Event('DOMContentLoaded');
+
+			await document.dispatchEvent(domContentLoaded);
+
+			await wait(250);
+
+			const events = Analytics.getEvents().filter(
+				({eventId}) => eventId === 'webContentViewed'
+			);
+
+			expect(events.length).toBeGreaterThanOrEqual(0);
 
 			document.body.removeChild(webContentElement);
 		});

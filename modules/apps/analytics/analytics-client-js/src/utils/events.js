@@ -30,6 +30,25 @@ const onReady = (fn) => {
 	return () => document.removeEventListener('DOMContentLoaded', fn);
 };
 
+/**
+ * Creates an event listener for all event types in events array.
+ *
+ * @param {Array.string} events Array of event type.
+ * @param {Function} fn The event listener callback.
+ * @returns {Function} The function to remove all the event listers that were added from events param.
+ */
+const onEvents = (events, fn) => {
+	if (events) {
+		events.forEach((eventName) => document.addEventListener(eventName, fn));
+
+		return () => {
+			events.forEach((eventName) => {
+				document.removeEventListener(eventName, fn);
+			});
+		};
+	}
+};
+
 const clickEvent = ({
 	analytics,
 	applicationId,
@@ -137,4 +156,4 @@ const removeDups = (results, items) => {
 	);
 };
 
-export {clickEvent, onReady, removeDups, sortByEventDate};
+export {clickEvent, onEvents, onReady, removeDups, sortByEventDate};
