@@ -139,19 +139,15 @@ class QueueFlushService {
 									this.processing = false;
 								});
 
-							return Promise.allSettled(queue.onFlush())
-								.then((result) => {
+							return Promise.allSettled(queue.onFlush()).then(
+								(result) => {
 									this._onFlushSuccess();
 									queue.onFlushSuccess(result);
 									releaseLock();
 
 									return Promise.resolve();
-								})
-								.catch(() => {
-									releaseLock();
-
-									return Promise.reject();
-								});
+								}
+							);
 						});
 					})
 					.catch(() => {
