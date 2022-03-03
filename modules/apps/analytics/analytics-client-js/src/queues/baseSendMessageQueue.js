@@ -27,9 +27,18 @@ class BaseSendMessageQueue extends BaseQueue {
 
 	onFlush() {
 		return this.getItems().map((message) =>
-			this.clientAdapter.sendWithTimeout(message).then(() => {
-				this._dequeue(message.id);
-			})
+			this.clientAdapter
+				.sendWithTimeout(message)
+				.then(() => {
+					this._dequeue(message.id);
+				})
+				.catch((error) => {
+					if (error.status === 400) {
+						this._dequeue(message.id);
+					}
+
+					return Promise.reject(error);
+				})
 		);
 	}
 }
