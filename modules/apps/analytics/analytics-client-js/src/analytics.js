@@ -126,15 +126,17 @@ class Analytics {
 		ENV.Analytics.create = Analytics.create;
 		ENV.Analytics.dispose = Analytics.dispose;
 
-		if (
-			Liferay &&
-			Liferay.ThemeDisplay &&
-			Liferay.ThemeDisplay.getUserEmailAddress()
-		) {
-			self.setIdentity({
-				email: Liferay.ThemeDisplay.getUserEmailAddress(),
-			});
-		}
+		console.log('creating');
+
+		// if (
+		// 	Liferay &&
+		// 	Liferay.ThemeDisplay &&
+		// 	Liferay.ThemeDisplay.getUserEmailAddress()
+		// ) {
+		// 	self.setIdentity({
+		// 		email: Liferay.ThemeDisplay.getUserEmailAddress(),
+		// 	});
+		// }
 
 		return self;
 	}
@@ -272,6 +274,8 @@ class Analytics {
 		if (this._isTrackingDisabled()) {
 			return;
 		}
+
+		console.log('firing identity', identity);
 
 		if (!identity.email) {
 			return console.error(
@@ -447,6 +451,7 @@ class Analytics {
 
 		let identityHash = Promise.resolve(storedIdentityHash);
 
+		console.log(newIdentityHash, storedIdentityHash);
 		if (newIdentityHash !== storedIdentityHash) {
 			const {channelId} = this._getContext();
 			const {emailAddressHashed} = identity;
@@ -461,6 +466,7 @@ class Analytics {
 				userId,
 			});
 
+			console.log('sending new identity');
 			identityHash = newIdentityHash;
 		}
 
